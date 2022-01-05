@@ -51,9 +51,12 @@ class ResumeController extends Controller
     public function deletePdf()
     {
         $user = auth()->user();
-        \Storage::disk('s3')->delete('resume/'.$user->id.'.pdf');
+        $file_path = parse_url('resume/'.$user->id.'.pdf');
+        \Storage::disk('s3')->delete($file_path);
         return redirect('/home');
     }
+
+ 
 
     //upload pdf to s3 bucket aws
     public function uploadPdf()
