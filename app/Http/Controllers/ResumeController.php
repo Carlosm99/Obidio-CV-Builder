@@ -52,7 +52,7 @@ class ResumeController extends Controller
     {
         $user = auth()->user();
         $file_path = parse_url('resume/'.$user->id.'.pdf');
-        \Storage::disk('s3')->delete($file_path);
+        Storage::disk('s3')->delete($file_path);
         return redirect('/home');
     }
 
@@ -63,7 +63,7 @@ class ResumeController extends Controller
     {
         $user = auth()->user();
         $pdf = \PDF::loadView('resume-ref', compact('user'));
-        \Storage::disk('s3')->put('resume/'.$user->id.'.pdf', $pdf->output(), 'public-read');
+        Storage::disk('s3')->put('resume/'.$user->id.'.pdf', $pdf->output(), 'public-read');
 
         return redirect('/home')->with('success', 'PDF subido correctamente a aws S3');
     }
@@ -72,7 +72,7 @@ class ResumeController extends Controller
     public function downloadPdf()
     {
         $user = auth()->user();
-        \Storage::disk('s3')->download('resume/'.$user->id.'.pdf');
+        Storage::disk('s3')->download('resume/'.$user->id.'.pdf');
         // return $pdf->download($user->id.'.pdf');
         return redirect('/home')->with('success', 'PDF descargado correctamente de aws S3');
     }
@@ -82,7 +82,7 @@ class ResumeController extends Controller
     public function getPdf()
     {
         $user = auth()->user();
-        $file = \Storage::disk('s3')->get('resume/'.$user->id.'.pdf');
+        $file = Storage::disk('s3')->get('resume/'.$user->id.'.pdf');
         return response($file, 200)
             ->header('Content-Type', 'application/pdf');
             header('Content-Disposition', 'inline; filename="'.$user->id.'.pdf"');
